@@ -14,6 +14,7 @@ warnings.filterwarnings("ignore")
 def infer_rife(in_path, out_path, keep_source_imgs, UHD=False, starting_index=0):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     torch.set_grad_enabled(False)
+    
     if torch.cuda.is_available():
         torch.backends.cudnn.enabled = True
         torch.backends.cudnn.benchmark = True
@@ -28,9 +29,9 @@ def infer_rife(in_path, out_path, keep_source_imgs, UHD=False, starting_index=0)
 
     i = starting_index
 
-    for img0_path, img1_path in tzip(os.listdir(in_path), os.listdir(in_path)[1:]):
-        img0 = cv2.imread(in_path + img0_path)
-        img1 = cv2.imread(in_path + img1_path)
+    for img0_path, img1_path in tzip(sorted(os.listdir(in_path)), sorted(os.listdir(in_path))[1:]):
+        img0 = cv2.imread(in_path + '/' + img0_path)
+        img1 = cv2.imread(in_path + '/' + img1_path)
         img0 = (torch.tensor(img0.transpose(2, 0, 1)).to(device) / 255.).unsqueeze(0)
         img1 = (torch.tensor(img1.transpose(2, 0, 1)).to(device) / 255.).unsqueeze(0)
 
