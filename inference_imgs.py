@@ -8,7 +8,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-def inference_imgs(in_path, out_path, save_source_imgs, UHD=False):
+def inference_imgs(in_path, out_path, keep_source_imgs, UHD=False):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     torch.set_grad_enabled(False)
     if torch.cuda.is_available():
@@ -41,7 +41,7 @@ def inference_imgs(in_path, out_path, save_source_imgs, UHD=False):
 
         out_img = model.inference(img0, img1, UHD)
 
-        if not save_source_imgs:
+        if not keep_source_imgs:
             cv2.imwrite(f'{out_path}/{str(i).zfill(6)}.png',
                         (out_img[0] * 255).byte().cpu().numpy().transpose(1, 2, 0)[:h, :w])
             i += 1
@@ -52,3 +52,10 @@ def inference_imgs(in_path, out_path, save_source_imgs, UHD=False):
             cv2.imwrite(f'{out_path}/{str(i).zfill(6)}.png',
                         (out_img[0] * 255).byte().cpu().numpy().transpose(1, 2, 0)[:h, :w])
             i += 1
+
+    if keep_source_imgs:
+        cv2.imwrite(f'{out_path}/{str(i).zfill(6)}.png',
+                    (img1[0] * 255).byte().cpu().numpy().transpose(1, 2, 0)[:h, :w])
+
+if __name__ == '__main__':
+    inference_imgs("C:\\Users\\ZG\\Desktop\\rife-ncnn-vulkan-20210210-windows\\orig\\", "C:\\Users\\ZG\\Desktop\\rife-ncnn-vulkan-20210210-windows\\out\\", True)
